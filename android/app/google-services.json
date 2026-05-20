@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "450808358538",
+    "project_id": "speednet-web",
+    "storage_bucket": "speednet-web.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450808358538:android:8dcff3f95bb0f29137ef73",
+        "android_client_info": {
+          "package_name": "com.speednet.rdc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLg1HGurlnnZdV7w8Zx324e1XSv9SBFtE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
