@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Home • SpeedNet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico?v=6">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=6">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=6">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=6">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<div class="sn-shell">
+
+<header class="sn-header">
+  <div class="sn-header-inner">
+    <div class="sn-brand"><img src="logo.png" class="sn-brand-logo" alt="SpeedNet Logo">
+      <div class="sn-brand-badge">SN</div>
+      <div class="sn-brand-text">
+        <div class="sn-brand-title">SpeedNet</div>
+        <div class="sn-brand-sub">Digital Self-Care • Congo &amp; Angola</div>
+      </div>
+    </div>
+    <div class="sn-header-controls">
+      <div class="sn-header-status" data-sn-auth-status>Please login to continue</div>
+      <div class="sn-header-selects">
+        <select class="sn-pill-select" data-sn-lang>
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="pt">Português</option>
+          <option value="ln">Lingala</option>
+        </select>
+        <select class="sn-pill-select" data-sn-country>
+          <option value="cd">Congo</option>
+          <option value="ao">Angola</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</header>
+<nav class="sn-nav">
+  <div class="sn-nav-inner">
+    <a href="index" class="sn-nav-link" data-home="true" data-i18n="nav_home" data-i18n="nav_home">Home</a>
+    <a href="special-offers" class="sn-nav-link" data-i18n="nav_offers" data-i18n="nav_offers">Special Offers</a>
+    <a href="bundles" class="sn-nav-link" data-i18n="nav_bundles" data-i18n="nav_bundles">Bundles</a>
+    <a href="vas" class="sn-nav-link" data-i18n="nav_vas" data-i18n="nav_vas">VAS</a>
+    <a href="credit-transfer" class="sn-nav-link" data-i18n="nav_credit" data-i18n="nav_credit">Credit Transfer</a>
+    <a href="recharge" class="sn-nav-link" data-i18n="nav_recharge" data-i18n="nav_recharge">Line Recharge</a>
+    <a href="my-subscriptions" class="sn-nav-link" data-i18n="nav_subs" data-i18n="nav_subs">My Subscriptions</a>
+    <a href="speedradio" class="sn-nav-link" data-i18n="nav_radio" data-i18n="nav_radio">SpeedRadio</a>
+    <a href="menu" class="sn-nav-link" data-i18n="nav_menu" data-i18n="nav_menu">Menu</a>
+  </div>
+</nav>
+
+  <main class="sn-main">
+    <div class="sn-main-inner">
+
+<section class="sn-wow-hero">
+  <div class="sn-orbit sn-orbit-one"></div>
+  <div class="sn-orbit sn-orbit-two"></div>
+
+  <div class="sn-wow-copy">
+    <div class="sn-wow-kicker"><span class="sn-live-dot"></span> Premium eSIM network experience</div>
+    <h1 class="sn-wow-title">SpeedNet eSIM — the premium digital network hub for Congo & Angola.</h1>
+    <p class="sn-wow-sub">Sign in once with Firebase OTP. After verification, buy packages, recharge, manage VAS, subscriptions, and eSIM QR activation from one stunning dashboard.</p>
+    <div class="sn-wow-actions">
+      <a href="special-offers" class="sn-btn sn-btn-xl">Explore Offers</a>
+      <a href="bundles" class="sn-btn sn-btn-glass">View Bundles</a>
+    </div>
+    <div class="sn-wow-stats">
+      <div><b>OTP</b><span>Firebase Login</span></div>
+      <div><b>Pay</b><span>Orange Money + MPSA</span></div>
+      <div><b>eSIM</b><span>SpeedNet API Ready</span></div>
+    </div>
+  </div>
+
+  <section class="sn-login-glass">
+    <div class="sn-login-shine"></div>
+    <div class="sn-card-title-row">
+      <div>
+        <h2 class="sn-card-title" data-i18n="quick_login_title">Secure OTP Login</h2>
+        <p class="sn-card-sub" data-i18n="quick_login_sub">Enter your number, receive a Firebase OTP, verify it, and this device will not ask for OTP again for the same number.</p>
+      </div>
+    </div>
+
+    <div class="sn-login-progress">
+      <span class="active">1 Number</span>
+      <i></i>
+      <span>2 OTP</span>
+      <i></i>
+      <span>3 Dashboard</span>
+    </div>
+
+    <div id="sn-login-step1" class="sn-otp-step">
+      <div class="sn-form-row">
+        <label class="sn-label" data-i18n="country_label">Country</label>
+        <select class="sn-select-input" id="sn-login-country">
+          <option value="+243" data-flag="cd">🇨🇩 Congo (DRC) +243</option>
+          <option value="+244" data-flag="ao">🇦🇴 Angola +244</option>
+        </select>
+      </div>
+      <div class="sn-form-row">
+        <label class="sn-label" data-i18n="msisdn_label">Mobile number</label>
+        <input class="sn-input sn-input-lg" type="tel" id="sn-login-msisdn" placeholder="900 000 000">
+      </div>
+      <div class="sn-form-row">
+        <button class="sn-btn sn-btn-xl sn-btn-full" type="button" id="sn-btn-send-

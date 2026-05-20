@@ -1,0 +1,31 @@
+SpeedNet Manual Payment Setup
+
+Stripe and Wise have been removed. Payment now works like this:
+
+User selects package -> payment.html -> pays by Airtel Money or Unitel Money -> uploads screenshot + transaction ID -> admin approves -> SpeedNet/SpeedNet eSIM order is triggered automatically.
+
+Where to set Airtel/Unitel numbers:
+1) config.js
+   manualPayment.airtelNumber
+   manualPayment.unitelNumber
+   manualPayment.accountName
+
+2) backend/api_keys.php
+   $AIRTEL_MONEY_NUMBER
+   $UNITEL_MONEY_NUMBER
+   $MANUAL_PAYMENT_ACCOUNT_NAME
+
+Admin panel:
+/admin/login.php
+Admin name: speednet
+Password: speednetrdc#
+
+Payment proofs are saved in:
+uploads/payment_screens/
+
+Manual order records are saved in:
+backend/manual_orders.json
+
+Important:
+For automatic eSIM generation, each Buy button needs a real SpeedNet package_id in data-sn-bundle-id.
+SpeedNet credentials remain in backend/api_keys.php.

@@ -1,0 +1,18 @@
+SpeedNet Client QR Flow
+
+New flow:
+1. Client buys package and submits payment proof.
+2. Admin logs in and approves payment.
+3. System requests real SpeedNet QR/code.
+4. Client opens my-subscriptions.html (My eSIMs).
+5. Client enters phone number or order ID.
+6. Approved SpeedNet eSIM QR/code appears for client.
+7. Client can copy code or download QR image.
+
+Admin login:
+admin/login.php
+Username: speednetrdc
+Password: speednetrdc#
+
+Important:
+Real SpeedNet QR needs PHP hosting/XAMPP and valid SpeedNet package IDs/API keys.

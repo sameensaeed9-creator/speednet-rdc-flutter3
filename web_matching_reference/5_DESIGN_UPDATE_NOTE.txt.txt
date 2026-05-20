@@ -1,0 +1,9 @@
+SpeedNet Dark Premium Design Update
+
+Changes made:
+- Dark theme preserved.
+- Search bar removed as requested.
+- Back button added globally.
+- SpeedNet logo loading screen added on every page reload.
+- Premium dark glassmorphism layout, neon highlights, modern cards/buttons.
+- Existing pages, packages, links, Firebase OTP, payment and SpeedNet placeholders preserved.

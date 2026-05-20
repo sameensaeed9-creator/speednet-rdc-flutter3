@@ -1,0 +1,7 @@
+Final patch included:
+- All visible package prices and payment currency changed to Franc Congolais (FC).
+- Special Offers, Bundles, VAS and payment flow use FC currency.
+- Favicon regenerated from SpeedNet logo and linked with cache-busting (?v=6) in all HTML pages.
+- Back arrow is now inside sticky header left side only; old floating/top back button removed.
+- Home page bare footer eSIM text/link removed.
+- Banner image fitting improved for desktop and mobile.

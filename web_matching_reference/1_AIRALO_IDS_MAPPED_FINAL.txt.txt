@@ -1,0 +1,18 @@
+Congo SpeedNet IDs mapped in backend/speednet_package_map.php
+
+Available real SpeedNet Congo package IDs from /v2/packages:
+- pondu-mobile-in-7days-1gb
+- pondu-mobile-in-15days-2gb
+- pondu-mobile-in-30days-3gb
+- pondu-mobile-in-30days-5gb
+- pondu-mobile-in-30days-10gb
+
+Important:
+SpeedNet response for Congo is DATA-only eSIM. Voice/SMS website packages are mapped to the closest data eSIM because SpeedNet did not return voice/SMS packages for Congo in the provided response.
+
+Client QR flow:
+1. User submits payment.
+2. Admin approves payment.
+3. backend/speednet_package_map.php maps website package to SpeedNet package.
+4. SpeedNet /v2/orders creates real eSIM.
+5. Client checks QR on my-subscriptions.html using order ID or phone.
