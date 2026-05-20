@@ -1,0 +1,15 @@
+SpeedNet live setup note
+
+Updated in this package:
+1. Full mobile responsive CSS added.
+2. Social links added: Instagram, Threads, Facebook, YouTube.
+3. SpeedNet front-facing text changed to SpeedNet eSIM.
+4. Settings language options added: English, French, Portuguese, Lingala.
+5. Payment + eSIM backend flow is already connected: Stripe checkout -> success.html -> backend/verify_payment.php -> SpeedNet order.
+
+Required before real live use:
+- backend/api_keys.php: add STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET, WISE_API_TOKEN, WISE_PROFILE_ID.
+- config.js: add Stripe publishable key.
+- Firebase Console: Authentication > Sign-in method > Phone enabled.
+- Firebase Console: Authentication > Settings > Authorized domains: add speednetrdc.com and localhost for local testing.
+- SpeedNet Partner dashboard: make sure these credentials are approved for live production. The project auto-generates and caches SpeedNet access token; you do not generate access token manually for each client.

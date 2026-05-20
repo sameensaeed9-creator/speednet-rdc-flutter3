@@ -1,0 +1,28 @@
+CREATE TABLE IF NOT EXISTS airalo_packages (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ package_id VARCHAR(120) NOT NULL UNIQUE,
+ country_code VARCHAR(10),
+ title VARCHAR(255),
+ data_amount VARCHAR(80),
+ validity VARCHAR(80),
+ net_price DECIMAL(12,2),
+ currency VARCHAR(10),
+ is_active TINYINT(1) DEFAULT 1,
+ raw_json LONGTEXT,
+ last_seen_at DATETIME,
+ created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+ updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS airalo_sync_logs (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ status VARCHAR(30), message TEXT, fetched_count INT DEFAULT 0,
+ active_count INT DEFAULT 0, inactive_count INT DEFAULT 0,
+ created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS speednet_bundle_airalo_map (
+ id INT AUTO_INCREMENT PRIMARY KEY,
+ speednet_bundle_key VARCHAR(120) NOT NULL UNIQUE,
+ airalo_package_id VARCHAR(120),
+ is_active TINYINT(1) DEFAULT 0,
+ updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

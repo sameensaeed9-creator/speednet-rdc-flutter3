@@ -1,0 +1,20 @@
+[
+    {
+        "id": "SN-20260508-131839-4022",
+        "status": "pending",
+        "method": "Orange Money",
+        "transaction_id": "2345678923",
+        "sender_phone": "+243892399321",
+        "customer_phone": "+243900000000",
+        "amount": "1300",
+        "currency": "FC",
+        "description": "150 MB \u2013 1,300 Fc \u2013 Validity: 3 Days",
+        "package_id": "internet_3",
+        "screenshot": "uploads\/payment_screens\/SN-20260508-131839-4022.pdf",
+        "created_at": "2026-05-08T13:18:39+02:00",
+        "approved_at": null,
+        "esim_code": null,
+        "speednet_response": null,
+        "admin_note": null
+    }
+]

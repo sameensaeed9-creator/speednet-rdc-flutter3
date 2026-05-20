@@ -1,0 +1,73 @@
+SPEEDNET API KEYS GUIDE (ENGLISH)
+
+1) FIREBASE OTP
+File: config.js
+Your Firebase web config has already been added:
+apiKey: AIzaSyDL12ICJ4Oyx6hvuRnsa3SAGNh0Ef4g_JU
+authDomain: speednet-web.firebaseapp.com
+projectId: speednet-web
+
+Important Firebase dashboard steps:
+- Open Firebase Console
+- Select speednet-web project
+- Go to Authentication > Sign-in method
+- Enable Phone provider
+- Go to Authentication > Settings > Authorized domains
+- Add your domain, and for XAMPP testing keep localhost allowed
+
+2) AIRALO eSIM API
+File: backend/api_keys.php
+Your SpeedNet client credentials have already been added:
+AIRALO_CLIENT_ID = 3f18c480dce4613d3e7adb9139b9c712
+AIRALO_CLIENT_SECRET = 809srZGBqRw2krXvYIra0Wy6NPGPddoHdbapNjBk
+
+Where to add SpeedNet bearer/access token:
+backend/api_keys.php
+$AIRALO_API_TOKEN = 'PASTE_AIRALO_BEARER_TOKEN_HERE';
+
+Where to set SpeedNet live/sandbox URL:
+backend/api_keys.php
+$AIRALO_BASE_URL = 'https://sandbox-partners-api.speednet.com';
+Change this to live URL when SpeedNet approves production access.
+
+3) STRIPE API KEYS
+Create/get keys from:
+Stripe Dashboard > Developers > API keys
+
+Add publishable key in:
+config.js
+stripe.publishableKey = 'pk_live_...'
+
+Add secret key in:
+backend/api_keys.php
+$STRIPE_SECRET_KEY = 'sk_live_...';
+
+Never put Stripe secret key in JavaScript or public HTML.
+
+4) WISE API
+Wise is normally used with a Wise Business account.
+Get API token from:
+Wise Business > Settings > Developer tools / API tokens
+
+Add token/profile in:
+backend/api_keys.php
+$WISE_API_TOKEN = '...';
+$WISE_PROFILE_ID = '...';
+
+For manual Wise bank transfer display, update:
+config.js > wise section
+
+5) RUNNING ON XAMPP
+Copy the project folder to:
+C:\xampp\htdocs\speednet
+
+Open in browser:
+http://localhost/speednet
+
+
+
+ADMIN PANEL
+- The admin panel is hidden from the public website menu/navigation.
+- Open it directly in browser: http://localhost/SpeedNet_Laravel_XAMPP_Ready/admin/login.php
+- Admin Name: speednet
+- Password: speednetrdc#
