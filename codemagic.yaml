@@ -1,0 +1,30 @@
+workflows:
+  ios-speednet-build:
+    name: SpeedNet RDC iOS Build
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Recreate missing Flutter iOS/Android project folders
+        script: |
+          set -e
+          echo "Backup Firebase files if available"
+          if [ -f android/app/google-services.json ]; then cp android/app/google-services.json /tmp/google-services.json; fi
+          if [ -f ios/Runner/GoogleService-Info.plist ]; then cp ios/Runner/GoogleService-Info.plist /tmp/GoogleService-Info.plist; fi
+
+          echo "Generate complete Flutter platform folders"
+          flutter create . --platforms=ios,android
+
+          echo "Restore Firebase files"
+          if [ -f /tmp/google-services.json ]; then mkdir -p android/app && cp /tmp/google-services.json android/app/google-services.json; fi
+          if [ -f /tmp/GoogleService-Info.plist ]; then mkdir -p ios/Runner && cp /tmp/GoogleService-Info.plist ios/Runner/GoogleService-Info.plist; fi
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Build iOS app without code signing
+        script: flutter build ios --release --no-codesign
+    artifacts:
+      - build/ios/iphoneos/Runner.app
+      - build/ios/**/*.xcarchive
+      - build/**/outputs/**/*.apk
