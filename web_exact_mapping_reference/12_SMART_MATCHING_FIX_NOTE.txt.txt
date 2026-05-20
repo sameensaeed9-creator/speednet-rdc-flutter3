@@ -1,0 +1,15 @@
+SpeedNet Smart Package Matching Fix
+
+Fixed:
+- Packages no longer all show unavailable.
+- Custom offers are allowed when mapped to a live Airalo package ID.
+- 500MB/1GB -> pondu-mobile-in-7days-1gb.
+- 2GB -> pondu-mobile-in-15days-2gb.
+- 3GB -> pondu-mobile-in-30days-3gb.
+- 4GB/5GB -> pondu-mobile-in-30days-5gb.
+- 10GB/12GB -> pondu-mobile-in-30days-10gb.
+- Added speednet_live_packages.json fallback so localhost does not mark everything unavailable if API sync fails.
+- All visible package availability messages are in English.
+
+Important:
+Backend still blocks only when mapping is missing or the mapped live Airalo ID is not present in the live/fallback package list.

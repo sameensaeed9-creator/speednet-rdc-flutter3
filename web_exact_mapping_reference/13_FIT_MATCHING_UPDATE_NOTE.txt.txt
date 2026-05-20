@@ -1,0 +1,27 @@
+SpeedNet fit-matching availability update
+
+This update fixes the issue where every package was shown as available.
+
+New rule:
+1. The selected offer description is parsed for data amount and validity.
+2. The offer is compared against the latest live Airalo/SpeedNet data-only eSIM packages.
+3. A package is available only if a live eSIM package can cover the selected offer's data and validity.
+4. Offers with voice minutes or SMS are not marked available because the current Airalo packages returned for Congo are data-only.
+5. Packages bigger than available live stock, such as 25GB/30 days or 45000MB/30 days when only 10GB/30 days is available, are marked unavailable.
+
+Examples:
+500MB / 3 days -> available, fits 1GB / 7 days
+1GB / 3 days -> available, fits 1GB / 7 days
+2GB / 3 days -> available, fits 2GB / 15 days
+5GB / night -> available, fits 5GB / 30 days
+10GB / 1 day -> available, fits 10GB / 30 days
+25GB / 30 days -> unavailable, no live package is big enough
+Voice/SMS offers -> unavailable, because current live eSIM packages are data-only
+
+Updated files:
+backend/speednet_package_map.php
+backend/airalo_package_map.php
+admin/approve_order.php
+speedfinal1/backend/speednet_package_map.php
+speedfinal1/backend/airalo_package_map.php
+speedfinal1/admin/approve_order.php

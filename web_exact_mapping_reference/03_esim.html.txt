@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Premium eSIM</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body{font-family:Arial;background:#0b0b0b;color:#fff;margin:0}
+.header{padding:15px;text-align:center;background:#111;font-size:22px}
+.filter{padding:10px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;padding:20px}
+.card{background:#111;padding:15px;border-radius:12px;transition:.3s}
+.card:hover{transform:scale(1.05)}
+.price{color:orange;font-weight:bold}
+button{background:orange;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+.qr{text-align:center;padding:20px}
+.guide{padding:20px;background:#111;margin:20px;border-radius:10px}
+</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div class="header">🌍 Premium eSIM</div>
+
+<div class="filter">
+<select onchange="loadPackages(this.value)">
+<option value="">All Countries</option>
+<option value="US">USA</option>
+<option value="GB">UK</option>
+<option value="FR">France</option>
+</select>
+</div>
+
+<div id="status" style='text-align:center;'>Loading packages...</div><div id="list" class="grid"></div>
+
+<div class="qr">
+<h3>Your QR Code</h3>
+<img id="qr" width="200">
+</div>
+
+<div class="guide">
+<h3>How to Install eSIM</h3>
+<p>1. Open Settings</p>
+<p>2. Mobile Data</p>
+<p>3. Add eSIM</p>
+<p>4. Scan QR Code</p>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-auth-compat.js"></script>
+<script src="config.js"></script>
+
+<script>
+async function loadPackages(country=""){
+ let r = await fetch("backend/esim-api.php?action=packages");
+ let d = await r.json();
+ let c = document.getElementById("list");
+ c.innerHTML="";
+ d.data.forEach(p=>{
+  c.innerHTML += `<div class="card">
+   <h3>${p.title}</h3>
+   <p>${p.data}GB - ${p.validity} days</p>
+   <p class="price">$${p.price}</p>
+   <button onclick="pay('${p.id}', ${p.price})">Pay & Buy</button>
+  </div>`;
+ });
+}
+
+function pay(id, price){
+ const params = new URLSearchParams({amount:String(price), currency:'FC', desc:'Premium SpeedNet eSIM', bundleId:id, phone:(localStorage.getItem('sn_auth_user')||'')});
+ window.location.href = 'payment.html?' + params.toString();
+}
+
+
+async function buy(id){
+ let r = await fetch("backend/esim-api.php?action=buy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({package_id:id})});
+ let d = await r.json();
+ localStorage.setItem("order",d.data.id);
+fetch('admin/admin-orders.php',{method:'POST',body:JSON.stringify(d)});
+ loadQR();
+}
+
+async function loadQR(){
+ let id = localStorage.getItem("order");
+ if(!id) return;
+ let r = await fetch("backend/esim-api.php?action=order&id="+id);
+ let d = await r.json();
+ document.getElementById("qr").src = d.data.qr_code;
+}
+
+loadPackages(); loadQR();
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+<script>
+function buyNow(){
+  window.location.href = "payment.html";
+}
+</script>

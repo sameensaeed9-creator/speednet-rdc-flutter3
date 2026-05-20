@@ -1,0 +1,323 @@
+<?php
+
+// SpeedNet website package => fallback real Airalo/SpeedNet eSIM package.
+// Final availability is NOT based on this map only.
+// The function below checks whether the selected offer logically fits an available Airalo data-only eSIM package.
+
+$SPEEDNET_PACKAGE_MAP = [
+    // Real Airalo package IDs
+    'pondu-mobile-in-7days-1gb' => 'pondu-mobile-in-7days-1gb',
+    'pondu-mobile-in-15days-2gb' => 'pondu-mobile-in-15days-2gb',
+    'pondu-mobile-in-30days-3gb' => 'pondu-mobile-in-30days-3gb',
+    'pondu-mobile-in-30days-5gb' => 'pondu-mobile-in-30days-5gb',
+    'pondu-mobile-in-30days-10gb' => 'pondu-mobile-in-30days-10gb',
+
+    // Special offers / Flexi combo
+    'fc_500mb_3d' => 'pondu-mobile-in-7days-1gb',
+    'fc_1gb_3d' => 'pondu-mobile-in-7days-1gb',
+    'fc_2gb_3d' => 'pondu-mobile-in-15days-2gb',
+    'fc_4gb_3d' => 'pondu-mobile-in-30days-5gb',
+    'fc_12gb_10d' => 'pondu-mobile-in-30days-10gb',
+    'sp_1000_1h' => 'pondu-mobile-in-7days-1gb',
+    'sp_2000_2h' => 'pondu-mobile-in-15days-2gb',
+    'sp_5000_night' => 'pondu-mobile-in-30days-5gb',
+    'sp_50_2d' => 'pondu-mobile-in-7days-1gb',
+    'sp_300_2d' => 'pondu-mobile-in-7days-1gb',
+    'sp_1gb_2d' => 'pondu-mobile-in-7days-1gb',
+    'sp_1500_2d' => 'pondu-mobile-in-15days-2gb',
+    'sp_2500_2d' => 'pondu-mobile-in-30days-3gb',
+    'sp_3500_2d' => 'pondu-mobile-in-30days-5gb',
+    'sp_180_3d' => 'pondu-mobile-in-7days-1gb',
+    'sp_4500_3d' => 'pondu-mobile-in-30days-5gb',
+    'sp_45000_30d' => '',
+
+    // Bundles page known IDs. These are fallback only; fit check below makes final decision.
+    'special_offers_3' => 'pondu-mobile-in-30days-5gb',
+    'voice_1' => '',
+    'voice_2' => '',
+    'voice_3' => '',
+    'voice_4' => '',
+    'voice_5' => '',
+    'voice_6' => '',
+    'voice_7' => '',
+    'voice_8' => '',
+    'voice_9' => '',
+    'voice_10' => '',
+    'voice_11' => '',
+    'neighbour_kitoko_packages_1' => '',
+    'neighbour_kitoko_packages_2' => '',
+    'neighbour_kitoko_packages_3' => '',
+    'neighbour_kitoko_packages_4' => '',
+    'neighbour_kitoko_packages_5' => '',
+    'neighbour_kitoko_packages_6' => '',
+    'neighbour_kitoko_packages_7' => '',
+    'neighbour_kitoko_packages_8' => '',
+    'neighbour_kitoko_packages_9' => '',
+    'neighbour_kitoko_packages_10' => '',
+    'neighbour_kitoko_packages_11' => '',
+    'neighbour_kitoko_packages_12' => '',
+    'sms_packages_1' => '',
+    'sms_packages_2' => '',
+    'sms_packages_3' => '',
+    'sms_packages_4' => '',
+    'sms_packages_5' => '',
+    'international_packages_1' => 'pondu-mobile-in-30days-10gb',
+    'international_packages_2' => '',
+    'roaming_packages_1' => 'pondu-mobile-in-7days-1gb',
+    'roaming_packages_2' => 'pondu-mobile-in-7days-1gb',
+    'roaming_packages_3' => 'pondu-mobile-in-7days-1gb',
+    'roaming_packages_4' => 'pondu-mobile-in-30days-3gb',
+    'sunday_package_1' => 'pondu-mobile-in-7days-1gb',
+    'mega_boss_packages_1' => 'pondu-mobile-in-30days-10gb',
+    'mega_boss_packages_2' => '',
+    'mega_boss_packages_3' => 'pondu-mobile-in-30days-5gb',
+    'mega_boss_packages_4' => 'pondu-mobile-in-30days-10gb',
+    'mega_boss_packages_5' => '',
+    'mega_boss_packages_6' => '',
+    'mega_boss_packages_7' => '',
+    'mega_boss_packages_8' => '',
+    '25_years_of_africa_packages_1' => '',
+    '25_years_of_africa_packages_2' => '',
+    '25_years_of_africa_packages_3' => '',
+    '25_years_of_africa_packages_4' => 'pondu-mobile-in-30days-10gb',
+    '25_years_of_africa_packages_5' => '',
+    '25_years_of_africa_packages_6' => '',
+    'vas_sos' => '',
+    'vas_roaming' => '',
+];
+
+function speednet_get_speednet_package_id($websitePackageId) {
+    global $SPEEDNET_PACKAGE_MAP;
+    $websitePackageId = trim((string)$websitePackageId);
+    if ($websitePackageId === '') return '';
+    return $SPEEDNET_PACKAGE_MAP[$websitePackageId] ?? '';
+}
+
+function speednet_live_packages_file() {
+    return __DIR__ . '/speednet_live_packages.json';
+}
+
+function speednet_load_live_packages() {
+    $file = speednet_live_packages_file();
+    if (!file_exists($file)) return ['packages'=>[], 'synced_at'=>0];
+    $data = json_decode(file_get_contents($file), true);
+    if (!is_array($data)) return ['packages'=>[], 'synced_at'=>0];
+    if (!isset($data['packages']) || !is_array($data['packages'])) $data['packages'] = [];
+    return $data;
+}
+
+function speednet_flatten_packages_from_response($response) {
+    $out = [];
+    $countries = $response['data'] ?? [];
+    if (!is_array($countries)) return $out;
+    foreach ($countries as $country) {
+        $operators = $country['operators'] ?? [];
+        if (!is_array($operators)) continue;
+        foreach ($operators as $operator) {
+            $packages = $operator['packages'] ?? [];
+            if (!is_array($packages)) continue;
+            foreach ($packages as $pkg) {
+                $id = $pkg['id'] ?? '';
+                if (!$id) continue;
+                $out[$id] = [
+                    'id' => $id,
+                    'type' => $pkg['type'] ?? '',
+                    'title' => $pkg['title'] ?? '',
+                    'data' => $pkg['data'] ?? '',
+                    'amount' => $pkg['amount'] ?? null,
+                    'day' => $pkg['day'] ?? '',
+                    'price' => $pkg['price'] ?? '',
+                    'net_price' => $pkg['net_price'] ?? null,
+                    'country_code' => $country['country_code'] ?? '',
+                    'operator' => $operator['title'] ?? '',
+                    'plan_type' => $operator['plan_type'] ?? 'data',
+                    'voice' => $pkg['voice'] ?? null,
+                    'text' => $pkg['text'] ?? null,
+                    'active' => true,
+                    'updated_at' => date('c')
+                ];
+            }
+        }
+    }
+    return $out;
+}
+
+function speednet_sync_packages_now() {
+    if (!function_exists('speednet_request')) require_once __DIR__ . '/api_keys.php';
+    $all = [];
+    foreach (['CD', 'AO'] as $country) {
+        $path = '/v2/packages?filter%5Bcountry%5D=' . urlencode($country) . '&filter%5Btype%5D=local&include=topup&limit=100&language=en';
+        $result = speednet_request('GET', $path);
+        if (!empty($result['ok']) && is_array($result['response'] ?? null)) {
+            $all = array_merge($all, speednet_flatten_packages_from_response($result['response']));
+        }
+    }
+    $payload = ['ok'=>true, 'synced_at'=>time(), 'synced_at_text'=>date('c'), 'packages'=>$all];
+    file_put_contents(speednet_live_packages_file(), json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    return $payload;
+}
+
+function speednet_ensure_recent_live_packages($maxAgeSeconds = 3600, $forceRefresh = false) {
+    $data = speednet_load_live_packages();
+    $synced = intval($data['synced_at'] ?? 0);
+    if ($forceRefresh || !$synced || (time() - $synced) > $maxAgeSeconds) {
+        $fresh = speednet_sync_packages_now();
+        if (!empty($fresh['packages'])) return $fresh;
+        if (!empty($data['packages'])) {
+            $data['sync_warning'] = 'Could not refresh live packages right now. Using last saved package list.';
+            return $data;
+        }
+        return $fresh;
+    }
+    return $data;
+}
+
+function speednet_known_fallback_packages() {
+    return [
+        'ok'=>true,
+        'synced_at'=>time(),
+        'synced_at_text'=>date('c'),
+        'source'=>'static_fallback_from_confirmed_airalo_response',
+        'packages'=>[
+            'pondu-mobile-in-7days-1gb' => ['id'=>'pondu-mobile-in-7days-1gb','type'=>'sim','title'=>'1 GB - 7 days','data'=>'1 GB','amount'=>1024,'day'=>7,'price'=>7.5,'net_price'=>4.4,'country_code'=>'CD','operator'=>'Pondu Mobile','plan_type'=>'data','voice'=>null,'text'=>null,'active'=>true],
+            'pondu-mobile-in-15days-2gb' => ['id'=>'pondu-mobile-in-15days-2gb','type'=>'sim','title'=>'2 GB - 15 days','data'=>'2 GB','amount'=>2048,'day'=>15,'price'=>12.5,'net_price'=>7.7,'country_code'=>'CD','operator'=>'Pondu Mobile','plan_type'=>'data','voice'=>null,'text'=>null,'active'=>true],
+            'pondu-mobile-in-30days-3gb' => ['id'=>'pondu-mobile-in-30days-3gb','type'=>'sim','title'=>'3 GB - 30 days','data'=>'3 GB','amount'=>3072,'day'=>30,'price'=>16.5,'net_price'=>9.7,'country_code'=>'CD','operator'=>'Pondu Mobile','plan_type'=>'data','voice'=>null,'text'=>null,'active'=>true],
+            'pondu-mobile-in-30days-5gb' => ['id'=>'pondu-mobile-in-30days-5gb','type'=>'sim','title'=>'5 GB - 30 days','data'=>'5 GB','amount'=>5120,'day'=>30,'price'=>25,'net_price'=>15.6,'country_code'=>'CD','operator'=>'Pondu Mobile','plan_type'=>'data','voice'=>null,'text'=>null,'active'=>true],
+            'pondu-mobile-in-30days-10gb' => ['id'=>'pondu-mobile-in-30days-10gb','type'=>'sim','title'=>'10 GB - 30 days','data'=>'10 GB','amount'=>10240,'day'=>30,'price'=>45,'net_price'=>27.3,'country_code'=>'CD','operator'=>'Pondu Mobile','plan_type'=>'data','voice'=>null,'text'=>null,'active'=>true],
+        ]
+    ];
+}
+
+function speednet_parse_mb($text) {
+    $text = strtoupper(str_replace([',', ' '], ['', ' '], (string)$text));
+    $best = 0;
+    if (preg_match_all('/(\d+(?:\.\d+)?)\s*GB\b/', $text, $m)) {
+        foreach ($m[1] as $v) $best = max($best, floatval($v) * 1024);
+    }
+    if (preg_match_all('/(\d+(?:\.\d+)?)\s*MB\b/', $text, $m)) {
+        foreach ($m[1] as $v) $best = max($best, floatval($v));
+    }
+    return (int)ceil($best);
+}
+
+function speednet_parse_days($text) {
+    $text = strtolower(str_replace(['–','—',' '], ['-','-',' '], (string)$text));
+    if (preg_match('/(\d+(?:\.\d+)?)\s*day/', $text, $m)) return (int)ceil(floatval($m[1]));
+    if (preg_match('/(\d+(?:\.\d+)?)\s*hour|\b(\d+)h\b/', $text, $m)) return 1;
+    if (preg_match('/00\s*h|night|nuit|4:59|4h59/', $text)) return 1;
+    return 0;
+}
+
+function speednet_offer_has_non_data_units($text) {
+    $text = strtolower((string)$text);
+    // Airalo package response is data-only. Offers that promise minutes/SMS cannot be honestly fulfilled by Airalo data eSIM.
+    return (bool)preg_match('/\b(min|mins|minute|minutes|sms|voice|call|appel|chamada)\b/i', $text);
+}
+
+function speednet_pkg_mb($pkg) {
+    if (isset($pkg['amount']) && is_numeric($pkg['amount']) && floatval($pkg['amount']) > 0) return (int)ceil(floatval($pkg['amount']));
+    return speednet_parse_mb(($pkg['data'] ?? '') . ' ' . ($pkg['title'] ?? ''));
+}
+
+function speednet_is_data_only_pkg($pkg) {
+    if (($pkg['type'] ?? '') !== 'sim') return false; // do not sell topup for a new order
+    if (!empty($pkg['voice']) || !empty($pkg['text'])) return false;
+    return true;
+}
+
+function speednet_find_fit_package($description, $packages) {
+    $requestedMb = speednet_parse_mb($description);
+    $requestedDays = speednet_parse_days($description);
+
+    if ($requestedMb <= 0) {
+        return [null, 'no_data_in_offer', 'This offer does not contain a data bundle that can be matched with the available eSIM packages.'];
+    }
+
+    if (speednet_offer_has_non_data_units($description)) {
+        return [null, 'contains_voice_or_sms', 'This offer includes voice minutes or SMS. Available eSIM packages are data-only, so this package cannot be activated right now.'];
+    }
+
+    $candidates = [];
+    foreach ($packages as $pkg) {
+        if (!speednet_is_data_only_pkg($pkg)) continue;
+        $mb = speednet_pkg_mb($pkg);
+        $days = intval($pkg['day'] ?? 0);
+        if ($mb >= $requestedMb && ($requestedDays <= 0 || $days >= $requestedDays)) {
+            $candidates[] = ['pkg'=>$pkg, 'mb'=>$mb, 'days'=>$days, 'extra_mb'=>$mb - $requestedMb, 'extra_days'=>max(0, $days - $requestedDays)];
+        }
+    }
+
+    if (!$candidates) {
+        return [null, 'no_fit_available', 'This package is currently unavailable because no live eSIM package fits its data/validity. Please select another package.'];
+    }
+
+    usort($candidates, function($a, $b) {
+        // Prefer closest data size first, then closest validity.
+        if ($a['extra_mb'] === $b['extra_mb']) return $a['extra_days'] <=> $b['extra_days'];
+        return $a['extra_mb'] <=> $b['extra_mb'];
+    });
+
+    return [$candidates[0]['pkg'], 'fit_matched', 'Package is available.'];
+}
+
+function speednet_check_package_availability($websitePackageId, $forceRefresh = false, $description = '') {
+    $websitePackageId = trim((string)$websitePackageId);
+    $description = trim((string)$description);
+    if (!$websitePackageId) return ['available'=>false, 'reason'=>'missing_website_package_id', 'message'=>'Package ID missing. Please select package again.'];
+
+    $live = speednet_ensure_recent_live_packages(3600, $forceRefresh);
+    $packages = $live['packages'] ?? [];
+    if (empty($packages)) {
+        $live = speednet_known_fallback_packages();
+        $packages = $live['packages'];
+    }
+
+    // If the exact selected ID is already a live Airalo data-only package, accept it.
+    if (isset($packages[$websitePackageId]) && speednet_is_data_only_pkg($packages[$websitePackageId])) {
+        $pkg = $packages[$websitePackageId];
+        return [
+            'available'=>true,
+            'reason'=>'exact_live_package',
+            'website_package_id'=>$websitePackageId,
+            'speednet_package_id'=>$pkg['id'],
+            'selected_description'=>$description,
+            'package'=>$pkg,
+            'message'=>'Package is available.',
+            'match_note'=>'Exact live eSIM package found.',
+            'synced_at'=>$live['synced_at_text'] ?? null
+        ];
+    }
+
+    // Main rule: decide by package description. It must fit a currently available data-only eSIM package.
+    if ($description !== '') {
+        [$fitPkg, $reason, $message] = speednet_find_fit_package($description, $packages);
+        if (!$fitPkg) {
+            return [
+                'available'=>false,
+                'reason'=>$reason,
+                'website_package_id'=>$websitePackageId,
+                'selected_description'=>$description,
+                'message'=>$message,
+                'synced_at'=>$live['synced_at_text'] ?? null
+            ];
+        }
+        return [
+            'available'=>true,
+            'reason'=>'fit_matched_live_package',
+            'website_package_id'=>$websitePackageId,
+            'speednet_package_id'=>$fitPkg['id'],
+            'selected_description'=>$description,
+            'package'=>$fitPkg,
+            'message'=>'Package is available.',
+            'match_note'=>'Selected offer fits live eSIM package: ' . ($fitPkg['title'] ?? $fitPkg['id']),
+            'requested_data_mb'=>speednet_parse_mb($description),
+            'requested_days'=>speednet_parse_days($description),
+            'synced_at'=>$live['synced_at_text'] ?? null
+        ];
+    }
+
+    // Last fallback only when no description is passed: use explicit static map and confirm it exists live.
+    $realId = speednet_get_speednet_package_id($websitePackageId);
+    if ($realId && isset($packages[$realId]) && speednet_is_data_only_pkg($packages[$realId])) {
+        $pkg = $packages[$realId];
+        return [

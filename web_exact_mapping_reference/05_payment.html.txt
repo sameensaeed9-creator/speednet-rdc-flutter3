@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Manual Payment • SpeedNet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico?v=6">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=6">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=6">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=6">
+  <link rel="stylesheet" href="style.css">
+  <script src="config.js"></script>
+  <style>
+    .pay-wrap{max-width:1080px;margin:30px auto;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:18px}.pay-card{background:rgba(32,20,51,.94);border:1px solid rgba(245,194,66,.25);border-radius:22px;padding:22px;box-shadow:0 18px 38px rgba(0,0,0,.55)}.pay-summary{grid-column:1/-1;background:radial-gradient(circle at top left,#f5c242 0,#7a1c8b 34%,#08040f 100%)}.pay-title{margin:0 0 8px;font-size:1.35rem}.pay-muted{color:#e0d5ff;font-size:.92rem;line-height:1.55}.pay-line{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.09);padding:9px 0;gap:14px}.wallet-box{background:rgba(0,0,0,.28);border-radius:16px;padding:16px;margin-top:12px;border:1px solid rgba(245,194,66,.24)}.wallet-number{font-size:1.15rem;font-weight:900;color:#f5c242}.pay-input,.pay-select{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(245,194,66,.35);background:#0d0820;color:#fff;margin:8px 0}.upload-box{border:1px dashed rgba(245,194,66,.48);border-radius:18px;padding:14px;background:rgba(0,0,0,.20)}.pay-alert{padding:12px 14px;border-radius:14px;background:rgba(245,194,66,.12);border:1px solid rgba(245,194,66,.25);color:#fff;margin-top:10px}@media(max-width:760px){.pay-wrap{grid-template-columns:1fr}.pay-line{flex-direction:column}}
+  </style>
+</head>
+<body>
+<div class="sn-shell">
+<header class="sn-header"><div class="sn-header-inner"><a class="sn-brand" href="index.html"><img src="logo.png" class="sn-brand-logo" alt="SpeedNet"><div class="sn-brand-text"><div class="sn-brand-title">SpeedNet</div><div class="sn-brand-sub">Orange Money + MPSA Payment</div></div></a></div></header>
+<main class="pay-wrap">
+  <section class="pay-card pay-summary">
+    <h1 class="pay-title">Complete your manual payment</h1>
+    <p class="pay-muted">Pay through Orange Money or MPSA, then upload your payment screenshot and transaction ID. Admin approval will automatically trigger SpeedNet eSIM generation.</p>
+    <div class="pay-line"><span>Package</span><b id="p-desc">SpeedNet bundle</b></div>
+    <div class="pay-line"><span>Amount</span><b id="p-amount">0 FC</b></div>
+    <div class="pay-line"><span>Phone</span><b id="p-phone">-</b></div>
+    <div id="package-status-box" class="pay-alert" style="display:none"></div>
+  </section>
+  <section class="pay-card">
+    <h2 class="pay-title">1. Pay by mobile money</h2>
+    <p class="pay-muted">Send the exact amount to one of the official SpeedNet payment numbers.</p>
+    <div class="wallet-box"><b>Orange Money</b><div class="wallet-number" id="airtelNumber">+243892399476</div><small>Account name: <span id="accountName1">SpeedNet RDC</span></small></div>
+    <div class="wallet-box"><b>MPSA</b><div class="wallet-number" id="unitelNumber">+243823778982</div><small>Account name: <span id="accountName2">SpeedNet RDC</span></small></div>
+    <div class="pay-alert">Keep your screenshot and transaction ID. Your eSIM is generated after admin approval.</div>
+  </section>
+  <section class="pay-card">
+    <h2 class="pay-title">2. Upload proof of payment</h2>
+    <form id="manualPaymentForm" enctype="multipart/form-data">
+      <input type="hidden" name="amount" id="f-amount">
+      <input type="hidden" name="currency" id="f-currency">
+      <input type="hidden" name="desc" id="f-desc">
+      <input type="hidden" name="bundleId" id="f-bundleId">
+      <input type="hidden" name="phone" id="f-phone">
+      <label>Payment method</label>
+      <select class="pay-select" name="method" required><option value="Orange Money">Orange Money</option><option value="MPSA">MPSA</option></select>
+      <label>Transaction ID / Payment reference</label>
+      <input class="pay-input" name="transaction_id" placeholder="Enter mobile money transaction ID" required>
+      <label>Sender phone number</label>
+      <input class="pay-input" name="sender_phone" placeholder="Number used for payment" required>
+      <label>Payment screenshot</label>
+      <div class="upload-box"><input type="file" name="screenshot" accept="image/*,.pdf" required></div>
+      <button class="sn-btn" type="submit" style="margin-top:12px;width:100%">Submit Payment for Approval</button>
+    </form>
+  </section>
+</main>
+</div>
+<script>
+const q = new URLSearchParams(location.search);
+const amount = q.get('amount') || '0', currency = q.get('currency') || 'FC', desc = q.get('desc') || 'SpeedNet bundle', bundleId = q.get('bundleId') || '', phone = q.get('phone') || '';
+document.getElementById('p-desc').textContent = desc; document.getElementById('p-amount').textContent = amount + ' ' + currency; document.getElementById('p-phone').textContent = phone || '-';
+document.getElementById('f-amount').value=amount; document.getElementById('f-currency').value=currency; document.getElementById('f-desc').value=desc; document.getElementById('f-bundleId').value=bundleId; document.getElementById('f-phone').value=phone;
+const mp=(window.SN_CONFIG && SN_CONFIG.manualPayment)||{};
+document.getElementById('airtelNumber').textContent = '+243892399476'; document.getElementById('unitelNumber').textContent = '+243823778982'; document.getElementById('accountName1').textContent=mp.accountName||'SpeedNet RDC'; document.getElementById('accountName2').textContent=mp.accountName||'SpeedNet RDC';
+
+const statusBox = document.getElementById('package-status-box');
+const payBtn = document.querySelector('#manualPaymentForm button[type="submit"]');
+async function liveCheckBeforePayment(){
+  if(!bundleId){
+    statusBox.style.display='block'; statusBox.textContent='Package ID missing. Please go back and select package again.';
+    payBtn.disabled=true; return false;
+  }
+  statusBox.style.display='block'; statusBox.textContent='Checking latest package availability...';
+  try{
+    const r = await fetch('backend/package_status.php?fresh=1&package_id=' + encodeURIComponent(bundleId) + '&desc=' + encodeURIComponent(desc), {cache:'no-store'});
+    const data = await r.json();
+    const st = data.status || {};
+    if(!st.available){
+      statusBox.textContent = st.message || 'This package is currently unavailable. Please select another package.';
+      payBtn.disabled = true;
+      return false;
+    }
+    statusBox.textContent = 'Package available. You can submit payment proof.';
+    payBtn.disabled = false;
+    return true;
+  }catch(err){
+    statusBox.textContent='Live package check failed. Please refresh and try again.';
+    payBtn.disabled=true;
+    return false;
+  }
+}
+liveCheckBeforePayment();
+document.getElementById('manualPaymentForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const ok = await liveCheckBeforePayment();
+  if(!ok) return;
+  const btn=this.querySelector('button'); btn.disabled=true; btn.textContent='Submitting...';
+  try{const r=await fetch('backend/manual_payment_submit.php',{method:'POST',body:new FormData(this)}); const data=await r.json(); if(data.ok){location.href='success.html?manual_id='+encodeURIComponent(data.id);} else {alert(data.message||'Could not submit payment.'); btn.disabled=false; btn.textContent='Submit Payment for Approval';}}
+  catch(err){alert('Upload failed. Please try again.'); btn.disabled=false; btn.textContent='Submit Payment for Approval';}
+});
+</script>
+<script src="script.js"></script>
+</body>
+</html>

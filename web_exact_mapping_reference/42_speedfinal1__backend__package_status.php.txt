@@ -1,0 +1,11 @@
+<?php
+require_once __DIR__ . '/api_keys.php';
+require_once __DIR__ . '/speednet_package_map.php';
+
+$input = json_decode(file_get_contents('php://input'), true) ?: [];
+$packageId = $_GET['package_id'] ?? $_GET['bundleId'] ?? $input['package_id'] ?? $input['bundleId'] ?? '';
+$description = $_GET['desc'] ?? $_GET['description'] ?? $input['desc'] ?? $input['description'] ?? '';
+$fresh = !empty($_GET['fresh']) || !empty($input['fresh']);
+$status = speednet_check_package_availability($packageId, $forceRefresh = $fresh, $description);
+speednet_json(['ok' => !empty($status['available']), 'status' => $status], !empty($status['available']) ? 200 : 409);
+?>

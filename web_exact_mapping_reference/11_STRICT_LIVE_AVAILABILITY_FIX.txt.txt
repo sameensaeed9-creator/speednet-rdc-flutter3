@@ -1,0 +1,20 @@
+Strict live availability fix added.
+
+Old issue:
+- Every website package was mapped to one of the available Airalo IDs.
+- Because of this, the system said every package was available.
+
+New logic:
+- The system still maps every website package ID.
+- But before Buy / Payment Submit / Admin Approve, it compares selected package data + validity with the live Airalo package.
+- If selected package is 500MB 3 days but mapped Airalo package is 1GB 7 days, it will now say unavailable.
+- Voice/SMS/VAS/hourly/night packages are blocked because the live Airalo package list is data-only eSIM.
+
+Checks are enforced at:
+1. Buy button / package selection
+2. payment.html before payment proof submit
+3. backend/manual_payment_submit.php
+4. admin/approve_order.php before eSIM order/QR
+
+User message:
+Yeh selected package live eSIM catalog me exact available nahi hai. Please koi aur package select karein.

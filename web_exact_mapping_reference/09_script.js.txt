@@ -1,0 +1,360 @@
+// ==== CONFIG ====
+const SN_CONFIG = window.SN_CONFIG || {};
+
+// ==== Simple front-end auth (localStorage based) ====
+function snLoadUsers() {
+    try { return JSON.parse(localStorage.getItem("sn_users") || "{}"); } catch (e) { return {}; }
+}
+function snSaveUsers(users) { localStorage.setItem("sn_users", JSON.stringify(users)); }
+function snSetAuthUser(user) {
+    localStorage.setItem("sn_auth_user", JSON.stringify(user));
+    localStorage.setItem("sn_auth", JSON.stringify(user));
+}
+function snGetAuthUser() {
+    try {
+        const raw = localStorage.getItem("sn_auth_user") || localStorage.getItem("sn_auth");
+        return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+}
+function snLogout() {
+    localStorage.removeItem("sn_auth_user");
+    localStorage.removeItem("sn_auth");
+    window.location.href = "index.html";
+}
+function snIsLoggedIn() { return !!snGetAuthUser(); }
+function snRequireLogin() { alert("Please login with OTP first."); window.location.href = "index.html"; }
+function snNormalizePhone(countryCode, localNumber){
+    let n = (localNumber || "").replace(/\D/g, "");
+    if ((localNumber || "").trim().startsWith("+")) return "+" + n;
+    if (n.startsWith("0")) n = n.substring(1);
+    return (countryCode || "+243") + n;
+}
+function snAlreadyVerifiedPhone(msisdn){
+    try { return localStorage.getItem("sn_verified_phone_" + msisdn) === "yes"; } catch(e){ return false; }
+}
+function snRememberVerifiedPhone(msisdn){
+    try { localStorage.setItem("sn_verified_phone_" + msisdn, "yes"); } catch(e){}
+}
+function snFirebaseReady(){
+    const f = SN_CONFIG.firebase || {};
+    return window.firebase && f.apiKey && !String(f.apiKey).includes("PASTE_");
+}
+function snInitFirebase(){
+    if (!snFirebaseReady()) return null;
+    if (!firebase.apps.length) firebase.initializeApp(SN_CONFIG.firebase);
+    return firebase.auth();
+}
+
+// ==== eSIM modal with QR generation ====
+function snOpenEsimModal(esimCode, bundleDesc, amount, currency) {
+    const modal = document.getElementById("sn-esim-modal");
+    if (!modal) { alert("e-SIM modal container not found."); return; }
+    const codeEl = document.getElementById("sn-esim-code");
+    const subEl = document.getElementById("sn-esim-sub");
+    const qrCanvas = document.getElementById("sn-esim-qr");
+    if (codeEl) codeEl.textContent = esimCode;
+    if (subEl) subEl.textContent = (bundleDesc || "Your SpeedNet bundle") + " • " + amount + " " + (currency || "FC");
+    try { if (window.QRious && qrCanvas) new QRious({ element: qrCanvas, value: esimCode, size: 180 }); } catch (e) { console.error("QR error:", e); }
+    modal.classList.add("sn-esim-modal-open");
+}
+function snCloseEsimModal() { const modal = document.getElementById("sn-esim-modal"); if (modal) modal.classList.remove("sn-esim-modal-open"); }
+function snGetMsisdn() {
+    const auth = snGetAuthUser();
+    if (auth && auth.msisdn) return auth.msisdn;
+    const el = document.querySelector("[data-sn-msisdn]");
+    return el && el.value ? el.value.trim() : "";
+}
+
+
+// ==== Live package availability check ====
+async function snCheckPackageAvailable(packageId, fresh, desc) {
+    if (!packageId) return { available: false, message: 'Package ID missing. Please select package again.' };
+    try {
+        const url = 'backend/package_status.php?package_id=' + encodeURIComponent(packageId) + (fresh ? '&fresh=1' : '') + '&desc=' + encodeURIComponent(desc || '');
+        const res = await fetch(url, { cache: 'no-store' });
+        const data = await res.json();
+        const st = data.status || {};
+        return {
+            available: !!st.available,
+            message: st.message || 'This package is currently unavailable. Please select another package.',
+            speednetPackageId: st.speednet_package_id || '',
+            raw: data
+        };
+    } catch (e) {
+        return { available: false, message: 'Live package check failed. Please check internet/server and try again.' };
+    }
+}
+
+async function snRefreshPackageButtons() {
+    const buttons = Array.from(document.querySelectorAll('[data-sn-pay], .sn-offer-buy-btn'));
+    for (const btn of buttons) {
+        const id = btn.getAttribute('data-sn-bundle-id') || btn.getAttribute('data-sn-offer-id') || '';
+        if (!id) continue;
+        const oldText = btn.textContent;
+        btn.setAttribute('data-sn-original-text', oldText);
+        const desc = btn.getAttribute('data-sn-desc') || btn.getAttribute('data-sn-offer-desc') || '';
+        const status = await snCheckPackageAvailable(id, false, desc);
+        if (!status.available) {
+            btn.disabled = true;
+            btn.classList.add('sn-btn-disabled');
+            btn.textContent = 'Unavailable';
+            btn.title = status.message;
+        }
+    }
+}
+
+// ==== Airtel + Unitel payment + SpeedNet eSIM placeholder ====
+async function snMakePayment(config) {
+    if (!snIsLoggedIn()) { snRequireLogin(); return; }
+    const live = await snCheckPackageAvailable(config.bundleId || '', true, config.description || '');
+    if (!live.available) {
+        alert(live.message || 'This package is currently unavailable. Please select another package.');
+        return;
+    }
+    const params = new URLSearchParams({
+        amount: String(config.amount || 0),
+        currency: config.currency || "FC",
+        desc: config.description || "SpeedNet bundle purchase",
+        bundleId: config.bundleId || "",
+        phone: snGetMsisdn() || ""
+    });
+    window.location.href = "payment.html?" + params.toString();
+}
+
+// ==== DOM Ready ====
+document.addEventListener("DOMContentLoaded", function () {
+    const path = window.location.pathname.split("/").pop() || "index.html";
+
+    // Nav active
+    document.querySelectorAll(".sn-nav-link").forEach(link => {
+        const href = link.getAttribute("href") || "";
+        const file = href.split("/").pop();
+        if (file === path) {
+            link.classList.add("sn-nav-link-active");
+        }
+        if ((path === "" || path === "index.html") && link.dataset.home === "true") {
+            link.classList.add("sn-nav-link-active");
+        }
+    });
+
+    // Header auth label
+    const authStatusEl = document.querySelector("[data-sn-auth-status]");
+    const auth = snGetAuthUser();
+    if (authStatusEl) {
+        authStatusEl.textContent = auth
+            ? "Logged in as " + (auth.name || auth.msisdn)
+            : "Please login to activate bundles";
+    }
+
+    // Disable discontinued/out-of-stock packages automatically.
+    snRefreshPackageButtons();
+
+    // Tabs
+    document.querySelectorAll("[data-sn-tab]").forEach(tab => {
+        tab.addEventListener("click", () => {
+            const target = tab.getAttribute("data-sn-tab");
+            document.querySelectorAll("[data-sn-tab]").forEach(t => t.classList.remove("sn-tab-active"));
+            document.querySelectorAll("[data-sn-tab-content]").forEach(c => c.classList.remove("sn-tab-content-active"));
+            tab.classList.add("sn-tab-active");
+            const content = document.querySelector(`[data-sn-tab-content="${target}"]`);
+            if (content) content.classList.add("sn-tab-content-active");
+        });
+    });
+
+    // Accordion
+    document.querySelectorAll("[data-sn-accordion]").forEach(item => {
+        const header = item.querySelector(".sn-accordion-header");
+        const body = item.querySelector(".sn-accordion-body");
+        const toggle = item.querySelector(".sn-accordion-toggle");
+        if (!header || !body) return;
+        header.addEventListener("click", () => {
+            const open = body.classList.toggle("sn-accordion-body-open");
+            if (toggle) toggle.textContent = open ? "−" : "+";
+        });
+    });
+
+    // Switch toggles
+    document.querySelectorAll(".sn-switch").forEach(sw => {
+        sw.addEventListener("click", () => {
+            sw.classList.toggle("sn-switch-on");
+        });
+    });
+
+    // Generic demo forms
+    document.querySelectorAll("form[data-sn-demo]").forEach(form => {
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+            if (!snIsLoggedIn()) {
+                snRequireLogin();
+                return;
+            }
+            const fd = new FormData(form);
+            const payload = {};
+            fd.forEach((value, key) => { payload[key] = value; });
+            payload.formId = form.getAttribute("data-sn-form-id") || "generic";
+            fetch("backend/save_form.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).then(r => r.json()).then(data => {
+                if (data && data.ok) {
+                    alert("Request submitted successfully.");
+                    form.reset();
+                } else {
+                    alert("Saved locally, but backend error was returned.");
+                }
+            }).catch(err => {
+                console.error(err);
+                alert("Request saved locally (demo mode).");
+            });
+        });
+    });
+
+    // Login form
+    const loginForm = document.querySelector("form[data-sn-login]");
+    if (loginForm) {
+        loginForm.addEventListener("submit", e => {
+            e.preventDefault();
+            const msisdn = (loginForm.querySelector("[name='msisdn']") || {}).value || "";
+            const password = (loginForm.querySelector("[name='password']") || {}).value || "";
+            const users = snLoadUsers();
+            const user = users[msisdn];
+            if (!user || user.password !== password) {
+                alert("Invalid number or password.");
+                return;
+            }
+            snSetAuthUser({ msisdn, name: user.name, email: user.email });
+            window.location.href = "index.html";
+        });
+    }
+
+    // Signup form
+    const signupForm = document.querySelector("form[data-sn-signup]");
+    if (signupForm) {
+        signupForm.addEventListener("submit", e => {
+            e.preventDefault();
+            const msisdn = (signupForm.querySelector("[name='msisdn']") || {}).value || "";
+            const name = (signupForm.querySelector("[name='name']") || {}).value || "";
+            const email = (signupForm.querySelector("[name='email']") || {}).value || "";
+            const password = (signupForm.querySelector("[name='password']") || {}).value || "";
+            if (!msisdn || !password) {
+                alert("Mobile number and password are required.");
+                return;
+            }
+            const users = snLoadUsers();
+            if (users[msisdn]) {
+                alert("Account already exists for this number. Please login.");
+                return;
+            }
+            users[msisdn] = { name, email, password };
+            snSaveUsers(users);
+            snSetAuthUser({ msisdn, name, email });
+            alert("Account created successfully.");
+            window.location.href = "index.html";
+        });
+    }
+
+    // Biometric (simulated) login
+    const bioBtn = document.querySelector("[data-sn-biometric]");
+    if (bioBtn && loginForm) {
+        bioBtn.addEventListener("click", e => {
+            e.preventDefault();
+            const msisdnField = loginForm.querySelector("[name='msisdn']");
+            const msisdn = msisdnField && msisdnField.value ? msisdnField.value : "";
+            if (!msisdn) {
+                alert("Enter your mobile number first, then use biometric login.");
+                return;
+            }
+            const users = snLoadUsers();
+            const user = users[msisdn];
+            if (!user) {
+                alert("No account found for this number. Please sign up first.");
+                return;
+            }
+            // In real app you'd call native biometric APIs here.
+            snSetAuthUser({ msisdn, name: user.name, email: user.email });
+            alert("Biometric login (simulated) success.");
+            window.location.href = "index.html";
+        });
+    }
+
+    // Logout button
+    const logoutBtn = document.querySelector("[data-sn-logout]");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            snLogout();
+        });
+    }
+
+    // eSIM modal close
+    const closeBtn = document.querySelector(".sn-esim-close");
+    if (closeBtn) {
+        closeBtn.addEventListener("click", snCloseEsimModal);
+    }
+    const modal = document.getElementById("sn-esim-modal");
+    if (modal) {
+        modal.addEventListener("click", e => {
+            if (e.target === modal) {
+                snCloseEsimModal();
+            }
+        });
+    }
+
+    // Payment buttons
+    document.querySelectorAll("[data-sn-pay]").forEach(btn => {
+        btn.addEventListener("click", async () => {
+            const amount = parseFloat(btn.getAttribute("data-sn-amount") || "0");
+            const currency = btn.getAttribute("data-sn-currency") || "FC";
+            const desc = btn.getAttribute("data-sn-desc") || "Bundle purchase";
+            const id = btn.getAttribute("data-sn-bundle-id") || "";
+            if (!amount) {
+                alert("Bundle amount missing on button.");
+                return;
+            }
+            snMakePayment({
+                amount: amount,
+                currency: currency,
+                description: desc,
+                bundleId: id
+            });
+        });
+    });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const offerButtons = document.querySelectorAll(".sn-offer-buy-btn");
+    const selBox = document.getElementById("sn-offer-selected");
+    const selText = document.getElementById("sn-offer-selected-text");
+    const form = document.getElementById("special-offers-activation-form");
+    const toggleOptions = document.querySelectorAll(".sn-toggle-option[data-sn-activate-mode]");
+    const fromInput = form ? form.querySelector("[name='from_number']") : null;
+    const toInput = form ? form.querySelector("[name='to_number']") : null;
+
+    if (!offerButtons.length || !form) {
+        return;
+    }
+
+    // when user clicks on an offer "Buy" button -> remember selection & show box
+    offerButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const offer = {
+                id: btn.getAttribute("data-sn-offer-id") || "",
+                amount: parseFloat(btn.getAttribute("data-sn-offer-amount") || "0"),
+                currency: btn.getAttribute("data-sn-offer-currency") || "FC",
+                desc: btn.getAttribute("data-sn-offer-desc") || ""
+            };
+            window._snSelectedOffer = offer;
+            if (selBox && selText) {
+                selBox.style.display = "block";
+                selText.textContent = offer.desc + " • " + offer.amount + " " + offer.currency;
+            }
+            // simple scroll into view
+            form.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+    });
+
+    // toggle: for me / for someone else
+    const applyMode = (mode) => {
+        window._snActivationMode = m

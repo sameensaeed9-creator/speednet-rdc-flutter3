@@ -1,0 +1,78 @@
+{
+  "ok": true,
+  "synced_at": 1778957704,
+  "synced_at_text": "2026-05-16T18:55:04+0000",
+  "source": "static_fallback_from_airalo_response",
+  "packages": {
+    "pondu-mobile-in-7days-1gb": {
+      "id": "pondu-mobile-in-7days-1gb",
+      "type": "sim",
+      "title": "1 GB - 7 days",
+      "data": "1 GB",
+      "amount": 1024,
+      "day": 7,
+      "price": 7.5,
+      "net_price": 4.4,
+      "country_code": "CD",
+      "operator": "Pondu Mobile",
+      "active": true,
+      "updated_at": "static-fallback"
+    },
+    "pondu-mobile-in-15days-2gb": {
+      "id": "pondu-mobile-in-15days-2gb",
+      "type": "sim",
+      "title": "2 GB - 15 days",
+      "data": "2 GB",
+      "amount": 2048,
+      "day": 15,
+      "price": 12.5,
+      "net_price": 7.7,
+      "country_code": "CD",
+      "operator": "Pondu Mobile",
+      "active": true,
+      "updated_at": "static-fallback"
+    },
+    "pondu-mobile-in-30days-3gb": {
+      "id": "pondu-mobile-in-30days-3gb",
+      "type": "sim",
+      "title": "3 GB - 30 days",
+      "data": "3 GB",
+      "amount": 3072,
+      "day": 30,
+      "price": 16.5,
+      "net_price": 9.7,
+      "country_code": "CD",
+      "operator": "Pondu Mobile",
+      "active": true,
+      "updated_at": "static-fallback"
+    },
+    "pondu-mobile-in-30days-5gb": {
+      "id": "pondu-mobile-in-30days-5gb",
+      "type": "sim",
+      "title": "5 GB - 30 days",
+      "data": "5 GB",
+      "amount": 5120,
+      "day": 30,
+      "price": 25,
+      "net_price": 15.6,
+      "country_code": "CD",
+      "operator": "Pondu Mobile",
+      "active": true,
+      "updated_at": "static-fallback"
+    },
+    "pondu-mobile-in-30days-10gb": {
+      "id": "pondu-mobile-in-30days-10gb",
+      "type": "sim",
+      "title": "10 GB - 30 days",
+      "data": "10 GB",
+      "amount": 10240,
+      "day": 30,
+      "price": 45,
+      "net_price": 27.3,
+      "country_code": "CD",
+      "operator": "Pondu Mobile",
+      "active": true,
+      "updated_at": "static-fallback"
+    }
+  }
+}
