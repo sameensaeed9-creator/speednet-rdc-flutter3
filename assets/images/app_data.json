@@ -1,0 +1,403 @@
+{
+  "bundles": {
+    "Internet": [
+      [
+        "35 MB",
+        "Validity: 3 Days",
+        "500 Fc"
+      ],
+      [
+        "100 MB",
+        "Validity: 3 Days",
+        "1,000 Fc"
+      ],
+      [
+        "150 MB",
+        "Validity: 3 Days",
+        "1,300 Fc"
+      ]
+    ],
+    "Special Bundles": [
+      [
+        "100 MB",
+        "Validity: 1 Hour",
+        "1,000 Fc"
+      ],
+      [
+        "200 MB",
+        "Validity: 2 Hours",
+        "2,500 Fc"
+      ],
+      [
+        "5000 MB",
+        "Validity: 00:00 \u2013 4:59 Hours",
+        "7,000 Fc"
+      ]
+    ],
+    "Voice": [
+      [
+        "10 Min + 50 SMS + 1 GB",
+        "Validity: 2 Days",
+        "3,500 Fc"
+      ],
+      [
+        "1.65 Min + 20 MB + 20 SMS",
+        "Validity: 1 Day",
+        "500 Fc"
+      ],
+      [
+        "2.45 Min + 30 MB + 30 SMS",
+        "Validity: 1 Day",
+        "1,000 Fc"
+      ],
+      [
+        "3.3 Min + 40 MB + 40 SMS",
+        "Validity: 1 Day",
+        "1,500 Fc"
+      ],
+      [
+        "5 Min + 70 MB + 70 SMS",
+        "Validity: 1 Day",
+        "2,000 Fc"
+      ],
+      [
+        "8.25 Min + 120 MB + 120 SMS",
+        "Validity: 1 Day",
+        "2,500 Fc"
+      ],
+      [
+        "16.4 Min + 300 MB",
+        "Validity: 3 Days",
+        "6,000 Fc"
+      ],
+      [
+        "41 Min + 500 MB + 300 SMS",
+        "Validity: 30 Days",
+        "15,000 Fc"
+      ],
+      [
+        "164 Min + 3000 MB + 600 SMS",
+        "Validity: 30 Days",
+        "60,000 Fc"
+      ],
+      [
+        "820 Min + 14,000 MB + 1000 SMS",
+        "Validity: 30 Days",
+        "180,000 Fc"
+      ],
+      [
+        "1640 Min + 28,000 MB + 2000 SMS",
+        "Validity: 3 Days",
+        "360,000 Fc"
+      ]
+    ],
+    "Neighbour Kitoko Packages": [
+      [
+        "1.5 Min + 10 SMS + 10 MB",
+        "Validity: 1 Day",
+        "500 Fc"
+      ],
+      [
+        "3 Min + 30 SMS + 30 MB",
+        "Validity: 1 Day",
+        "1,000 Fc"
+      ],
+      [
+        "5 Min + 60 SMS + 60 MB",
+        "Validity: 1 Day",
+        "1,500 Fc"
+      ],
+      [
+        "8.2 Min + 120 SMS + 120 MB",
+        "Validity: 1 Day",
+        "2,000 Fc"
+      ],
+      [
+        "16.4 Min + 250 SMS + 250 MB",
+        "Validity: 3 Days",
+        "3,500 Fc"
+      ],
+      [
+        "20 Min + 275 SMS + 275 MB",
+        "Validity: 5 Days",
+        "7,000 Fc"
+      ],
+      [
+        "25 Min + 300 SMS + 300 MB",
+        "Validity: 7 Days",
+        "8,500 Fc"
+      ],
+      [
+        "50 Min + 500 SMS + 500 MB",
+        "Validity: 7 Days",
+        "12,000 Fc"
+      ],
+      [
+        "80 Min + 600 SMS + 600 MB",
+        "Validity: 30 Days",
+        "18,000 Fc"
+      ],
+      [
+        "160 Min + 7500 SMS + 2000 MB",
+        "Validity: 30 Days",
+        "25,000 Fc"
+      ],
+      [
+        "330 Min + 1000 SMS + 5000 MB",
+        "Validity: 30 Days",
+        "45,000 Fc"
+      ],
+      [
+        "820 Min + 1500 SMS + 18,000 MB",
+        "Validity: 30 Days",
+        "80,000 Fc"
+      ]
+    ],
+    "SMS Packages": [
+      [
+        "20 SMS",
+        "Validity: 1 Day",
+        "500 Fc"
+      ],
+      [
+        "70 SMS",
+        "Validity: 1 Day",
+        "1,000 Fc"
+      ],
+      [
+        "1000 SMS",
+        "Validity: 1 Day",
+        "6,000 Fc"
+      ],
+      [
+        "2000 SMS",
+        "Validity: 1 Day",
+        "10,000 Fc"
+      ],
+      [
+        "5000 SMS",
+        "Validity: 1 Day",
+        "15,000 Fc"
+      ]
+    ],
+    "International Packages": [
+      [
+        "10 GB",
+        "Validity: 1 Day",
+        "8,000 Fc"
+      ],
+      [
+        "25 GB",
+        "Validity: 30 Days",
+        "60,000 Fc"
+      ]
+    ],
+    "Roaming Packages": [
+      [
+        "100 MB",
+        "Validity: 3 Days",
+        "500 Fc"
+      ],
+      [
+        "500 MB",
+        "Validity: 3 Days",
+        "1,500 Fc"
+      ],
+      [
+        "1000 MB",
+        "Validity: 7 Days",
+        "3,500 Fc"
+      ],
+      [
+        "3000 MB",
+        "Validity: 30 Days",
+        "4,000 Fc"
+      ]
+    ],
+    "Sunday Package": [
+      [
+        "1000 MB",
+        "Validity: 1 Day",
+        "1,500 Fc"
+      ]
+    ],
+    "Mega Boss Packages": [
+      [
+        "7000 MB",
+        "Validity: 15 Days",
+        "11,000 Fc"
+      ],
+      [
+        "17,000 MB",
+        "Validity: 30 Days",
+        "32,000 Fc"
+      ],
+      [
+        "4000 MB",
+        "Validity: 30 Days",
+        "7,000 Fc"
+      ],
+      [
+        "8000 MB",
+        "Validity: 30 Days",
+        "15,000 Fc"
+      ],
+      [
+        "165,000 MB",
+        "Validity: 30 Days",
+        "320,000 Fc"
+      ],
+      [
+        "18,000 MB",
+        "Validity: 30 Days",
+        "33,000 Fc"
+      ],
+      [
+        "225,000 MB",
+        "Validity: 30 Days",
+        "440,000 Fc"
+      ],
+      [
+        "330,000 MB",
+        "Validity: 30 Days",
+        "640,000 Fc"
+      ]
+    ],
+    "25 Years of Africa Packages": [
+      [
+        "10 Min + 50 SMS + 1 GB",
+        "Validity: 2 Days",
+        "3,000 Fc"
+      ],
+      [
+        "250 MB + 25 SMS + 25 Night Min",
+        "Validity: 3 Days",
+        "2,500 Fc"
+      ],
+      [
+        "30 Min + 5 GB Night",
+        "Validity: 3 Days",
+        "4,000 Fc"
+      ],
+      [
+        "7000 MB",
+        "Validity: 15 Days",
+        "2,500 Fc"
+      ],
+      [
+        "25 Min + 25 GB Night",
+        "Validity: 25 Days",
+        "45,000 Fc"
+      ],
+      [
+        "17,000 MB",
+        "Validity: 30 Days",
+        "40,000 Fc"
+      ]
+    ]
+  },
+  "special_offers": [
+    [
+      "fc_500mb_3d",
+      "500 MB",
+      "Validity: 3 Days",
+      "1000 FC"
+    ],
+    [
+      "fc_1gb_3d",
+      "1 GB",
+      "Validity: 3 Days",
+      "2000 FC"
+    ],
+    [
+      "fc_2gb_3d",
+      "2 GB",
+      "Validity: 3 Days",
+      "3000 FC"
+    ],
+    [
+      "fc_4gb_3d",
+      "4 GB",
+      "Validity: 3 Days",
+      "6000 FC"
+    ],
+    [
+      "fc_12gb_10d",
+      "12 GB",
+      "Validity: 10 Days",
+      "15000 FC"
+    ],
+    [
+      "sp_1000_1h",
+      "1000MB",
+      "1 hour",
+      "1000 FC"
+    ],
+    [
+      "sp_2000_2h",
+      "2000MB",
+      "2 hours",
+      "1500 FC"
+    ],
+    [
+      "sp_5000_night",
+      "5000MB",
+      "00H\u20134H59",
+      "8000 FC"
+    ],
+    [
+      "sp_50_2d",
+      "50MB",
+      "2 days",
+      "500 FC"
+    ],
+    [
+      "sp_300_2d",
+      "300MB",
+      "2 days",
+      "1000 FC"
+    ],
+    [
+      "sp_1gb_2d",
+      "1GB",
+      "2 days",
+      "1500 FC"
+    ],
+    [
+      "sp_1500_2d",
+      "1500MB",
+      "2 days",
+      "2500 FC"
+    ],
+    [
+      "sp_2500_2d",
+      "2500MB",
+      "2 days",
+      "3500 FC"
+    ],
+    [
+      "sp_3500_2d",
+      "3500MB",
+      "2 days",
+      "5500 FC"
+    ],
+    [
+      "sp_180_3d",
+      "180MB",
+      "3 days",
+      "500 FC"
+    ],
+    [
+      "sp_4500_3d",
+      "4500MB",
+      "3 days",
+      "7500 FC"
+    ],
+    [
+      "sp_45000_30d",
+      "45000MB",
+      "30 days",
+      "85000 FC"
+    ]
+  ]
+}
